@@ -276,11 +276,6 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
           <option>Piñón Blanco</option>
           <option>Piñón Rosa</option>
           <option>Baileys</option>
-          <option>Preparado a base de Queso Crema</option>
-          <option>Trufa</option>
-          <option>Tiramisú</option>
-          <option>Red Velvet</option>
-          <option>Otros</option>
         </select>
       </label>
     </div>
@@ -879,7 +874,7 @@ const RELLENOS = [
   'Almendra','Cajeta','Capuchino','Chocolate','Durazno en almíbar','Fresa natural','Moka','Nuez',
   'Oreo','Piña Coco','Chocochispas','Crema Pastelera','Frutas','Carlos V','Crunch','Ferrero',
   'Kinder','Mazapán','Nutella','Snickers','Turín','Limón con Queso','Queso con Zarzamora',
-  'Piñón Blanco','Piñón Rosa','Baileys','Preparado a base de Queso Crema'
+  'Piñón Blanco','Piñón Rosa','Baileys','Preparado a base de Queso Crema','Red Velvet'
 ];
 const CUSTOM_SABORES = [];
 let sabKey = '';
@@ -990,7 +985,7 @@ function syncUI(st){
     const hasOpt = Array.from(cs.options).some(o => o.value === st.rel);
     if((hasOpt ? cs.value : '') !== st.rel) cs.value = hasOpt ? st.rel : '';
   }
-  const rvOk = isCake && st.cat === 'especialSabor' && st.saborEsp === 'Red Velvet';
+  const rvOk = isCake && ((st.cat === 'especialSabor' && st.saborEsp === 'Red Velvet') || st.rel === 'Red Velvet');
   $('panRVWrap').classList.toggle('hidden', !rvOk);
   const rvRad = document.querySelector('input[name="pan"][value="Red Velvet"]');
   if(rvOk){
