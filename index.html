@@ -872,17 +872,18 @@ function maxNiveles(p){
   return 2;
 }
 
-const RELLENOS = [
-  'Almendra','Cajeta','Capuchino','Chocolate','Durazno en almíbar','Fresa natural','Moka','Nuez',
-  'Oreo','Piña Coco','Chocochispas','Crema Pastelera','Frutas','Carlos V','Crunch','Ferrero',
-  'Kinder','Mazapán','Nutella','Snickers','Turín','Limón con Queso','Queso con Zarzamora',
-  'Piñón Blanco','Piñón Rosa','Baileys','Preparado a base de Queso Crema','Red Velvet'
-];
+const RELLENOS_CAT = {
+  clasico : ['Almendra','Cajeta','Capuchino','Chocolate','Durazno en almíbar','Fresa natural','Moka','Nuez','Oreo','Piña Coco','Chocochispas','Crema Pastelera'],
+  frutas  : ['Frutas'],
+  especial: ['Carlos V','Crunch','Ferrero','Kinder','Mazapán','Nutella','Snickers','Turín','Limón con Queso','Queso con Zarzamora'],
+  especialSabor : ['Piñón Blanco','Piñón Rosa','Baileys','Red Velvet','Tiramisú']
+};
 const CUSTOM_SABORES = [];
 let sabKey = '';
 function fillSabores(){
-  const items = RELLENOS.concat(CUSTOM_SABORES);
-  const key = 'todos|' + CUSTOM_SABORES.join(',');
+  const cat = $('pastelCat').value;
+  const items = (RELLENOS_CAT[cat] || []).concat(CUSTOM_SABORES);
+  const key = cat + '|' + CUSTOM_SABORES.join(',');
   if(key === sabKey) return;
   sabKey = key;
   ['relSel','catSabor'].forEach(id => {
