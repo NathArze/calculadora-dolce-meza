@@ -137,7 +137,8 @@ dl.datos dt{color:var(--gris);font-weight:700;white-space:nowrap}
 dl.datos dd{margin:0;word-break:break-word}
 .extras{width:100%;font-size:13.5px;border-collapse:collapse;margin-top:6px}
 .extras td{padding:3px 0;border-top:1px dashed #f3e2e7}
-.extras td:first-child{color:var(--gris)}
+.extras td:first-child{color:var(--gris);overflow-wrap:anywhere;word-break:break-word}
+.extras td small{overflow-wrap:anywhere}
 .extras td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 .extras tr.cero td{color:#c9bcc0;font-weight:400}
 .extras td small{display:block;color:#b7a9ad;font-weight:400;font-size:11px}
@@ -1333,8 +1334,8 @@ function paint(st, r){
   let totExt = 0;
   r.extras.forEach(e => {
     totExt += e.v;
+    if(!e.v) return;
     const tr = document.createElement('tr');
-    if(!e.v) tr.className = 'cero';
     tr.innerHTML = '<td>' + e.l + (e.d ? '<small>' + e.d + '</small>' : '') + '</td><td>' + money(e.v) + '</td>';
     tb.appendChild(tr);
   });
@@ -1510,7 +1511,7 @@ function buildCopyText(st, r){
   L.push('Dedicatoria: ' + $('sumDed').textContent);
   L.push('');
   L.push('EXTRAS');
-  r.extras.filter(e => e.l !== 'Extras no aplicables a este producto').forEach(e =>
+  r.extras.filter(e => e.l !== 'Extras no aplicables a este producto' && e.v).forEach(e =>
     L.push('- ' + e.l + ': ' + money(e.v) + (e.d ? ' (' + e.d + ')' : '')));
   L.push('');
   L.push('PRECIO DEL PASTEL: ' + money(r.base) + r.baseTag);
