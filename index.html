@@ -880,16 +880,19 @@ const RELLENOS_CAT = {
   especial: ['Carlos V','Crunch','Ferrero','Kinder','Mazapán','Nutella','Snickers','Turín','Limón con Queso','Queso con Zarzamora'],
   especialSabor : ['Piñón Blanco','Piñón Rosa','Baileys','Red Velvet','Tiramisú']
 };
+const RELLENOS_TODOS = Array.from(new Set(
+  Object.keys(RELLENOS_CAT).reduce((a,k) => a.concat(RELLENOS_CAT[k]), []).concat(['Preparado a base de Queso Crema'])
+));
 const CUSTOM_SABORES = [];
 let sabKey = '';
 function fillSabores(){
   const cat = $('pastelCat').value;
-  const items = (RELLENOS_CAT[cat] || []).concat(CUSTOM_SABORES);
+  const catItems = (RELLENOS_CAT[cat] || []).concat(CUSTOM_SABORES);
+  const allItems = RELLENOS_TODOS.concat(CUSTOM_SABORES);
   const key = cat + '|' + CUSTOM_SABORES.join(',');
   if(key === sabKey) return;
   sabKey = key;
-  ['relSel','catSabor'].forEach(id => {
-    const sel = $(id);
+  const fill = (sel, items) => {
     const cur = sel.value;
     sel.innerHTML = '';
     const ph = document.createElement('option');
@@ -897,7 +900,9 @@ function fillSabores(){
     sel.appendChild(ph);
     items.forEach(n => { const o = document.createElement('option'); o.textContent = n; sel.appendChild(o); });
     if(items.indexOf(cur) !== -1) sel.value = cur;
-  });
+  };
+  fill($('catSabor'), catItems);
+  fill($('relSel'), allItems);
 }
 function colGrande(st){
   if(st.cat === 'clasico') return 'clasico';
