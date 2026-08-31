@@ -533,8 +533,8 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
       <label class="chk"><input type="checkbox" id="diaChk"> Diamantina</label>
     </div>
     <div class="grid3" style="margin-top:8px">
-      <label class="fld">Cantidad · Perlas
-        <select id="perlNivel"><option value="normal">Normal</option><option value="elevado">Elevada (precio ×2)</option></select>
+      <label class="fld">Cantidad · Perlas (gr)
+        <input type="number" id="perlGr" value="100" min="0" step="50">
       </label>
       <label class="fld">Cantidad · Matizadores
         <select id="matNivel"><option value="normal">Normal</option><option value="elevado">Elevada (precio ×2)</option></select>
@@ -948,7 +948,7 @@ function readState(){
     rosa: num('rosaQty'),
     espFlor: num('espFlorQty'),
     follaje: $('follajeChk').checked,
-    perl: $('perlChk').checked, perlNivel: $('perlNivel').value,
+    perl: $('perlChk').checked, perlGr: Math.max(0, Number($('perlGr').value) || 0),
     mat: $('matChk').checked, matNivel: $('matNivel').value,
     dia: $('diaChk').checked, diaNivel: $('diaNivel').value,
     soplar: $('soplarChk').checked,
@@ -1105,9 +1105,9 @@ function syncUI(st){
   st._fleElegible = elegible;
 
   const pm = PM_PRICE[S];
-  $('pmPrecios').textContent = pm
-    ? 'Precio por concepto (cantidad normal) según tamaño ' + SIZE_NAME[S] + ': ' + money(pm) + '.'
-    : 'Precio de perlas/matizadores/diamantina no configurado para este tamaño. Consultar con administración.';
+  $('pmPrecios').innerHTML = 'Perlas: <b>$110</b> por cada 100 gr. ' + (pm
+    ? 'Matizadores/diamantina (cantidad normal) según tamaño ' + SIZE_NAME[S] + ': ' + money(pm) + '.'
+    : 'Sin precio configurado de matizadores/diamantina para este tamaño.');
 
   let old = $('baseManualWrap');
   if(old) old.remove();
@@ -1182,8 +1182,9 @@ function compute(st, p){
 
     const pm = PM_PRICE[st.pers];
     const pmv = (chk, nivel) => (!chk || !pm) ? 0 : pm * (nivel === 'elevado' ? 2 : 1);
-    if((st.perl || st.mat || st.dia) && !pm) q.warns.push('Precio de perlas/matizadores/diamantina no configurado para este tamaño.');
-    q.extras.push({ l:'Perlas', v:pmv(st.perl, st.perlNivel) });
+    if((st.mat || st.dia) && !pm) q.warns.push('Precio de matizadores/diamantina no configurado para este tamaño.');
+    const perlCost = st.perl ? Math.round(st.perlGr / 100 * 110) : 0;
+    q.extras.push({ l:'Perlas (' + st.perlGr + ' gr)', v:perlCost, d: st.perl ? st.perlGr + ' gr × $110 / 100 gr' : '' });
     q.extras.push({ l:'Matizadores', v:pmv(st.mat, st.matNivel) });
     let dv = pmv(st.dia, st.diaNivel), dd = [];
     if(st.soplar){ dv += 100; dd.push('incluye diamantina para soplar $100'); }
